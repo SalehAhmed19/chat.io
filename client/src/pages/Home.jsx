@@ -6,7 +6,7 @@ import RightSidebar from "../components/RightSidebar";
 export default function Home() {
   const [selectedUser, setSelectedUser] = useState(false);
   return (
-    <div className="bg-[url('./src/assets/bgImage.svg')] bg-no-repeat bg-cover text-white">
+    <div>
       <div className="border w-full h-screen sm:px-[15%] sm:py-[5%]">
         <div
           className={`grid grid-cols-1 relative backdrop-blur-xl border-2 border-gray-600 rounded-2xl overflow-hidden h-[100%] ${
