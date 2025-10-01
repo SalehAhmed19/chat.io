@@ -28,7 +28,7 @@ export default function SideBar({ selectedUser, setSelectedUser }) {
         </div>
 
         {/* search */}
-        <div className="bg-[#282142] rounded-full flex items-center gap-2 py-3 px-4 mt-5">
+        <div className="bg-[#282142] rounded-full flex items-center gap-2 py-3 px-4 my-5">
           <img src={assets.search_icon} alt="search-icon" className="w-3" />
           <input
             type="text"
