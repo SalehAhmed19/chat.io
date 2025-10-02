@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import assets from "../assets/assets";
 import { useForm } from "react-hook-form";
+import { AuthContext } from "../../context/context";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [current, setCurrent] = useState("Sign up");
   const [submitted, setSubmitted] = useState(false);
   const {
@@ -12,12 +15,19 @@ export default function Login() {
     formState: { errors },
   } = useForm();
 
+  const { login } = useContext(AuthContext);
+
   const handleAuthentication = (data) => {
-    console.log(data);
     if (current === "Sign up" && !submitted) {
       setSubmitted(true);
       return;
     }
+    login(current === "Sign up" ? "signup" : "login", {
+      fullName: data.fullName,
+      email: data.email,
+      password: data.password,
+      bio: data.bio,
+    });
   };
   return (
     <div className="min-h-screen bg-cover bg-center flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl">

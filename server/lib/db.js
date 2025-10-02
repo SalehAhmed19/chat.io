@@ -6,7 +6,7 @@ export const connectMongo = async () => {
     mongoose.connection.on("connected", () => {
       console.log("Mongoose connected!");
     });
-    await mongoose.connect(`${process.env.URI}/chat-io`);
+    await mongoose.connect(`${process.env.URI}`);
   } catch (error) {
     console.log(error);
   }

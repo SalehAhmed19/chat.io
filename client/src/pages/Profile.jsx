@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import assets from "../assets/assets";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/context";
 
 export default function Profile() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -13,15 +14,33 @@ export default function Profile() {
     formState: { errors },
   } = useForm();
 
-  const updateProfile = (data) => {
-    console.log(data);
-    navigate("/");
+  const { authUser, updateProfile } = useContext(AuthContext);
+
+  const updateProfileHandler = async (data) => {
+    if (!selectedImage) {
+      await updateProfile({ fullName: data.fullName, bio: data.bio });
+      navigate("/");
+      return;
+    }
+    const reader = new FileReader();
+    reader.readAsDataURL(selectedImage);
+
+    reader.onload = async () => {
+      const base64Image = reader.result;
+      await updateProfile({
+        profilePicture: base64Image,
+        fullName: data.fullName,
+        bio: data.bio,
+      });
+      navigate("/");
+      return;
+    };
   };
   return (
     <div className="min-h-screen bg-cover bg-no-repeat flex items-center justify-center">
       <div className="w-5/6 max-w-2xl backdrop-blur-2xl text-gray-300 border-2 border-gray-600 flex items-center justify-between max-sm:flex-col-reverse rounded-lg">
         <form
-          onSubmit={handleSubmit(updateProfile)}
+          onSubmit={handleSubmit(updateProfileHandler)}
           className="flex flex-col gap-5 p-10 flex-1"
         >
           <h3 className="text-lg">Profile Details</h3>
@@ -54,6 +73,7 @@ export default function Profile() {
             {...register("fullName")}
             type="text"
             placeholder="Your Name"
+            defaultValue={authUser.fullName}
             required
             className="p-2 border border-gray-500 rounded-md"
           />
@@ -62,6 +82,7 @@ export default function Profile() {
             {...register("bio")}
             placeholder="Write bio"
             rows={4}
+            defaultValue={authUser.bio}
             className="p-2 border border-gray-500 rounded-md"
           ></textarea>
 
@@ -73,9 +94,11 @@ export default function Profile() {
           </button>
         </form>
         <img
-          src={assets.logo_icon}
+          src={authUser?.profilePicture || assets.logo_icon}
           alt="logo-icon"
-          className="max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10"
+          className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10 ${
+            selectedImage && "rounded-full"
+          }`}
         />
       </div>
     </div>

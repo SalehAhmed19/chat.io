@@ -3,9 +3,14 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import { RouterProvider } from "react-router-dom";
 import routes from "./router/routes";
+import { Toaster } from "react-hot-toast";
+import { AuthProvider } from "../context/authContex";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={routes} />
+    <AuthProvider>
+      <RouterProvider router={routes} />
+    </AuthProvider>
+    <Toaster />
   </StrictMode>
 );

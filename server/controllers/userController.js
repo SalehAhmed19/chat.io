@@ -18,7 +18,7 @@ export const signup = async (req, res) => {
       return res.json({ success: false, message: "User exist" });
     }
 
-    const salt = bcrypt.genSaltSync(process.env.SALT);
+    const salt = bcrypt.genSaltSync(10);
     const hashed = bcrypt.hashSync(password, salt);
 
     const newUser = await User.create({
@@ -37,7 +37,7 @@ export const signup = async (req, res) => {
       message: "Account created successfully",
     });
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
     res.json({ success: false, message: error.message });
   }
 };
@@ -106,4 +106,3 @@ export const updateProfile = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
-
