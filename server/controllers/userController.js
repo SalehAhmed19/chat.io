@@ -1,3 +1,4 @@
+import cld from "../lib/cld.js";
 import { generateJWT } from "../lib/utils.js";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
@@ -65,3 +66,43 @@ export const login = async (req, res) => {
   }
 };
 
+// authenticated
+export const checkAuth = (req, res) => {
+  res.json({ success: true, user: req.user });
+};
+
+// update profile details
+export const updateProfile = async (req, res) => {
+  try {
+    const { fullName, profilePicture, bio } = req.body;
+    const userId = req.user._id;
+    let updatedUser;
+
+    if (!profilePicture) {
+      updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { bio, fullName },
+        {
+          new: true,
+        }
+      );
+    } else {
+      const upload = await cld.uploader.upload(profilePicture);
+
+      updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+          profilePicture: upload.secure_url,
+          bio,
+          fullName,
+        },
+        { new: true }
+      );
+    }
+
+    res.json({ success: true, user: updatedUser });
+  } catch (error) {
+    console.log(error.message);
+    res.json({ success: false, message: error.message });
+  }
+};
