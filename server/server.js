@@ -4,6 +4,7 @@ import cors from "cors";
 import http from "http";
 import { connectMongo } from "./lib/db.js";
 import userRouter from "./routes/userRoutes.js";
+import messageRouter from "./routes/messageRoutes.js";
 
 const PORT = process.env.PORT || 4000;
 
@@ -21,6 +22,7 @@ app.use("/api/status", (req, res) => {
 });
 
 app.use("/api/user", userRouter);
+app.use("/api/messages", messageRouter);
 
 // connect to mongodb
 await connectMongo();
