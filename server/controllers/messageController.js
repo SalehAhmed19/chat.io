@@ -1,5 +1,7 @@
+import cld from "../lib/cld.js";
 import Message from "../models/Message.js";
 import User from "../models/User.js";
+import { io, userSocketMap } from "../server.js";
 
 // get all user axcept loggedin user
 export const getUsersForSidebar = async (req, res) => {
@@ -75,3 +77,34 @@ export const markMessageSeen = async (req, res) => {
 };
 
 // send message to selected user
+export const sendMessage = async (req, res) => {
+  try {
+    const { text, image } = req.body;
+    const receiverId = req.params.id;
+    const senderId = req.user._id;
+
+    let imgUrl;
+    if (image) {
+      const uploadResponse = await cld.uploader.upload(image);
+      imgUrl = uploadResponse.secure_url;
+    }
+
+    const newMessage = await Message.create({
+      senderId,
+      receiverId,
+      text,
+      image: imgUrl,
+    });
+
+    // Emmit the new message to receiver's socket
+    const receiverSocketId = userSocketMap[receiverId];
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newMessage", newMessage);
+    }
+
+    res.json({ success: true, newMessage });
+  } catch (error) {
+    console.log(error.message);
+    res.json({ success: false, message: error.message });
+  }
+};
