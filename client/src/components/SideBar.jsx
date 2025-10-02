@@ -1,5 +1,6 @@
 import React from "react";
 import assets, { userDummyData } from "../assets/assets";
+import { Link } from "react-router-dom";
 
 export default function SideBar({ selectedUser, setSelectedUser }) {
   return (
@@ -20,7 +21,9 @@ export default function SideBar({ selectedUser, setSelectedUser }) {
             />
 
             <div className="absolute top-full right-0 z-20 w-32 p-5 rounded-md bg-[#282142] border border-gray-600 text-gray-100 hidden group-hover:block">
-              <p className="cursor-pointer text-sm">Edit profile</p>
+              <Link to="/user/profile" className="cursor-pointer text-sm">
+                Edit profile
+              </Link>
               <hr className="my-2 border-t border-gray-500" />
               <p className="cursor-pointer text-sm">Logout</p>
             </div>
